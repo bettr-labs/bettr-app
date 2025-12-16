@@ -1,0 +1,16 @@
+<resources>
+    <!-- General -->
+    <string name="app_name">Bettr</string>
+
+    <!-- ONBOARDING -->
+    <!-- Welcome Screen -->
+    <string name="welcome_title">O passo mais difícil você já deu.</string>
+    <string name="welcome_paragraph_1">Reconhecer que as apostas estão atrapalhando sua vida exige &lt;b&gt;coragem&lt;/b&gt;.</string>
+    <string name="welcome_paragraph_2">Você não está mais sozinho nessa batalha.</string>
+    <string name="welcome_highlight">Milhares de pessoas já retomaram o controle de suas vidas. Agora é a sua vez de começar essa jornada.</string>
+    <string name="welcome_button">Quero retomar o controle</string>
+    <string name="welcome_tagline">Leva apenas 2 minutos para configurar sua proteção</string>
+
+
+</resources>
+
