@@ -40,7 +40,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-private fun WelcomeScreen() {
+fun WelcomeScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
