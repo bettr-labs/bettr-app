@@ -1,4 +1,4 @@
-package org.example.bettr.presentation.onboarding
+package org.example.bettr.presentation.welcome.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -33,21 +33,35 @@ import org.example.bettr.designsystem.theme.BettrGrayDark
 import org.example.bettr.designsystem.theme.BettrGrayDarker
 import org.example.bettr.designsystem.theme.BettrTextStyles
 import org.example.bettr.designsystem.theme.BettrTheme
-import org.example.bettr.designsystem.theme.BettrWhite
+import org.example.bettr.designsystem.theme.BettrNeutralBackground
 import org.example.bettr.designsystem.util.parseBoldText
+import org.example.bettr.presentation.welcome.WelcomeAction
+import org.example.bettr.presentation.welcome.viewmodel.WelcomeViewModel
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.koinInject
 
 @Composable
-fun WelcomeScreen() {
+fun WelcomeScreen(
+    viewModel: WelcomeViewModel = koinInject()
+) {
+    WelcomeScreenContent(
+        onGetStartedClick = { viewModel.sendAction(WelcomeAction.Action.OnClickGetStarted) }
+    )
+}
+
+@Composable
+private fun WelcomeScreenContent(
+    onGetStartedClick: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(
                 brush = Brush.verticalGradient(
                     colorStops = arrayOf(
-                        0.0f to BettrWhite,
+                        0.0f to BettrNeutralBackground,
                         0.4f to BettrBlueLight,
                         1.0f to BettrBlueLight
                     )
@@ -95,7 +109,7 @@ fun WelcomeScreen() {
             Spacer(Modifier.height(48.dp))
             BettrButton(
                 text = stringResource(Res.string.welcome_button),
-                onClick = { }
+                onClick = onGetStartedClick
             )
             Spacer(Modifier.height(32.dp))
             Text(
@@ -112,6 +126,8 @@ fun WelcomeScreen() {
 @Composable
 fun WelcomeScreenPreview() {
     BettrTheme {
-        WelcomeScreen()
+        WelcomeScreenContent(
+            onGetStartedClick = { }
+        )
     }
 }

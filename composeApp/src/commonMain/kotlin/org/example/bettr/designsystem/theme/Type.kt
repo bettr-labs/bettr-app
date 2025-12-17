@@ -201,21 +201,14 @@ object BettrTextStyles {
     fun labelLarge() = TextStyle(
         fontFamily = InterFontFamily(),
         fontWeight = FontWeight.Medium,
-        fontSize = 14.sp
-    )
-
-    @Composable
-    fun labelMedium() = TextStyle(
-        fontFamily = InterFontFamily(),
-        fontWeight = FontWeight.Medium,
-        fontSize = 12.sp
+        fontSize = 16.sp
     )
 
     @Composable
     fun labelSmall() = TextStyle(
         fontFamily = InterFontFamily(),
         fontWeight = FontWeight.Medium,
-        fontSize = 11.sp
+        fontSize = 12.sp
     )
 }
 

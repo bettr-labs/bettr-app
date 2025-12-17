@@ -1,6 +1,8 @@
 <resources>
-    <!-- General -->
+    <!-- GENERAL -->
     <string name="app_name">Bettr</string>
+    <string name="continue_button">Continuar</string>
+    <string name="back">Voltar</string>
 
     <!-- ONBOARDING -->
     <!-- Welcome Screen -->
@@ -10,6 +12,18 @@
     <string name="welcome_highlight">Milhares de pessoas já retomaram o controle de suas vidas. Agora é a sua vez de começar essa jornada.</string>
     <string name="welcome_button">Quero retomar o controle</string>
     <string name="welcome_tagline">Leva apenas 2 minutos para configurar sua proteção</string>
+
+    <!-- Bet Types Screen -->
+    <string name="bet_types_title">O que mais te pega hoje?</string>
+    <string name="bet_types_paragraph">Selecione todos os tipos de apostas ou jogos que você quer bloquear.</string>
+    <string name="bet_types_highlight">Quanto mais específico você for, melhor conseguimos te proteger nos momentos de impulso.</string>
+    <string name="bet_types_sports">Apostas Esportivas</string>
+    <string name="bet_types_casino">Cassino Online</string>
+    <string name="bet_types_tiger">Jogo do Tigrinho</string>
+    <string name="bet_types_poker">Poker</string>
+    <string name="bet_types_lottery">Loteria</string>
+    <string name="bet_types_other">Outros jogos de azar</string>
+    <string name="bet_types_button">Próximo</string>
 
 
 </resources>

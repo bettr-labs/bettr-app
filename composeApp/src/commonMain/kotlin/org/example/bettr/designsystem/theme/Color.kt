@@ -10,7 +10,7 @@ val BettrBlue = Color(0xFFBFDBFE)
 val BettrBlueDark = Color(0xFF1E40AF)
 val BettrBlueLight = Color(0xFFEFF6FF)
 
-val BettrWhite = Color(0xFFF8FAFB)
+val BettrNeutralBackground = Color(0xFFF8FAFB)
 val BettrGrayDarker = Color(0xFF334155)
 val BettrGrayDark = Color(0xFF475569)
 val BettrGray = Color(0xFF64748B)
