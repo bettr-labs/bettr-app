@@ -3,10 +3,10 @@ package org.example.bettr.presentation.welcome.viewmodel
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import org.example.bettr.presentation.welcome.WelcomeAction
-import org.example.bettr.presentation.welcome.WelcomeUiEffect
+import org.example.bettr.presentation.welcome.action.WelcomeAction
+import org.example.bettr.presentation.welcome.effect.WelcomeUiEffect
 
-class WelcomeViewModel : ViewModel(), WelcomeAction {
+internal class WelcomeViewModel : ViewModel(), WelcomeAction {
     private val _uiEffect = MutableSharedFlow<WelcomeUiEffect>(replay = 0, extraBufferCapacity = 1)
     val uiEffect = _uiEffect.asSharedFlow()
 

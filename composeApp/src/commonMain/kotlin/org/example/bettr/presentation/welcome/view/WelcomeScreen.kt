@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -35,7 +36,8 @@ import org.example.bettr.designsystem.theme.BettrTextStyles
 import org.example.bettr.designsystem.theme.BettrTheme
 import org.example.bettr.designsystem.theme.BettrNeutralBackground
 import org.example.bettr.designsystem.util.parseBoldText
-import org.example.bettr.presentation.welcome.WelcomeAction
+import org.example.bettr.presentation.welcome.action.WelcomeAction
+import org.example.bettr.presentation.welcome.effect.WelcomeUiEffect
 import org.example.bettr.presentation.welcome.viewmodel.WelcomeViewModel
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -43,9 +45,11 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
 @Composable
-fun WelcomeScreen(
+internal fun WelcomeScreen(
+    onNavigateToBetTypes: () -> Unit,
     viewModel: WelcomeViewModel = koinInject()
 ) {
+    EffectsHandler(viewModel, onNavigateToBetTypes)
     WelcomeScreenContent(
         onGetStartedClick = { viewModel.sendAction(WelcomeAction.Action.OnClickGetStarted) }
     )
@@ -122,9 +126,23 @@ private fun WelcomeScreenContent(
     }
 }
 
+@Composable
+private fun EffectsHandler(
+    viewModel: WelcomeViewModel,
+    onNavigateToBetTypes: () -> Unit
+) {
+    LaunchedEffect(Unit) {
+        viewModel.uiEffect.collect { effect ->
+            when (effect) {
+                is WelcomeUiEffect.NavigateToBetTypes -> onNavigateToBetTypes()
+            }
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
-fun WelcomeScreenPreview() {
+private fun WelcomeScreenPreview() {
     BettrTheme {
         WelcomeScreenContent(
             onGetStartedClick = { }
