@@ -25,6 +25,11 @@
     <string name="bet_types_other">Outros jogos de azar</string>
     <string name="bet_types_button">Próximo</string>
 
+    <!-- Dream Selection Screen -->
+    <string name="dream_selection_title">O que te motiva?</string>
+    <string name="dream_selection_paragraph">Ter objetivos claros para seu dinheiro ajuda a manter a motivação nos momentos difíceis.</string>
+    <string name="dream_selection_tagline">Escolha até 3 sonhos</string>
+    <string name="dream_selection_highlight">Lembre-se: seus sonhos são mais importantes que qualquer aposta.</string>
 
 </resources>
 
