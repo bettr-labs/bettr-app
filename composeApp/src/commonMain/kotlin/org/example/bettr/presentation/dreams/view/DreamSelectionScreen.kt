@@ -1,7 +1,9 @@
 package org.example.bettr.presentation.dreams.view
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,22 +23,36 @@ import org.example.bettr.designsystem.components.BettrButton
 import org.example.bettr.designsystem.components.BettrButtonColor
 import org.example.bettr.designsystem.components.BettrButtonSize
 import org.example.bettr.designsystem.components.BettrPagination
+import org.example.bettr.designsystem.components.BettrSelectionCard
 import org.example.bettr.designsystem.theme.BettrGrayDark
 import org.example.bettr.designsystem.theme.BettrGrayDarker
 import org.example.bettr.designsystem.theme.BettrNeutralBackground
 import org.example.bettr.designsystem.theme.BettrTextStyles
+import org.example.bettr.domain.model.DreamType
+import org.example.bettr.presentation.dreams.mapper.toIcon
+import org.example.bettr.presentation.dreams.model.DreamSelectionItemUiModel
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun DreamSelectionScreen(
-
+    items: List<DreamSelectionItemUiModel>,
+    onItemClick: (DreamType) -> Unit
 ) {
-    DreamSelectionScreenContent()
+    DreamSelectionScreenContent(
+        items = items,
+        onItemClick = onItemClick
+    )
 }
 
 @Composable
-private fun DreamSelectionScreenContent() {
+private fun DreamSelectionScreenContent(
+    items: List<DreamSelectionItemUiModel>,
+    onItemClick: (DreamType) -> Unit
+) {
+    val filteredItems = items.filter { it.type != DreamType.OTHER }
+
     Scaffold(
         modifier = Modifier.background(BettrNeutralBackground),
         topBar = {
@@ -57,7 +73,7 @@ private fun DreamSelectionScreenContent() {
                     text = stringResource(Res.string.continue_button),
                     size = BettrButtonSize.SmallText,
                     color = BettrButtonColor.GrayDark,
-                    enabled = false,
+                    enabled = items.any { it.isSelected },
                     onClick = {}
                 )
             }
@@ -83,12 +99,57 @@ private fun DreamSelectionScreenContent() {
                 textAlign = TextAlign.Center,
                 color = BettrGrayDark
             )
+            Spacer(modifier = Modifier.height(24.dp))
+            DreamSelectionGrid(
+                items = filteredItems,
+                onItemClick = onItemClick
+            )
         }
     }
 }
 
+@Composable
+private fun DreamSelectionGrid(
+    items: List<DreamSelectionItemUiModel>,
+    onItemClick: (DreamType) -> Unit
+) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        items.chunked(2).forEach { rowItems ->
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally)
+            ) {
+                rowItems.forEach { item ->
+                    BettrSelectionCard(
+                        text = item.label,
+                        icon = painterResource(item.type.toIcon()),
+                        selected = item.isSelected,
+                        onClick = { onItemClick(item.type) }
+                    )
+                }
+            }
+        }
+    }
+}
+
+private fun getMockDreamItems(): List<DreamSelectionItemUiModel> = listOf(
+    DreamSelectionItemUiModel(type = DreamType.HOME, label = "Comprar um imóvel", isSelected = false),
+    DreamSelectionItemUiModel(type = DreamType.TRAVEL, label = "Viajar", isSelected = false),
+    DreamSelectionItemUiModel(type = DreamType.MONEY, label = "Guardar dinheiro", isSelected = true),
+    DreamSelectionItemUiModel(type = DreamType.CAR, label = "Comprar um carro", isSelected = false),
+    DreamSelectionItemUiModel(type = DreamType.STUDY, label = "Estudar/Curso", isSelected = false),
+    DreamSelectionItemUiModel(type = DreamType.WEDDING, label = "Casamento", isSelected = false),
+    DreamSelectionItemUiModel(type = DreamType.VACATION, label = "Férias dos sonhos", isSelected = false),
+    DreamSelectionItemUiModel(type = DreamType.HEALTH, label = "Saúde/Fitness", isSelected = false)
+)
+
 @Preview(showBackground = true)
 @Composable
 private fun DreamSelectionScreenPreview() {
-    DreamSelectionScreenContent()
+    DreamSelectionScreenContent(
+        items = getMockDreamItems(),
+        onItemClick = {}
+    )
 }

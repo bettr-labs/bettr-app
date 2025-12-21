@@ -3,6 +3,7 @@ package org.example.bettr.designsystem.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
 import bettr.composeapp.generated.resources.Res
 import bettr.composeapp.generated.resources.house_icon
@@ -27,20 +29,19 @@ import org.example.bettr.designsystem.theme.BettrGreenDark
 import org.example.bettr.designsystem.theme.BettrGreenLight
 import org.example.bettr.designsystem.theme.BettrNeutralBackground
 import org.example.bettr.designsystem.theme.BettrTextStyles
-import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun BettrSelectionCard(
     text: String,
+    icon: Painter,
     selected: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    icon: DrawableResource? = null
+    modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .width(167.dp)
             .clip(RoundedCornerShape(20.dp))
             .border(
@@ -49,6 +50,7 @@ internal fun BettrSelectionCard(
                 RoundedCornerShape(20.dp)
             )
             .background(BettrNeutralBackground)
+            .clickable { onClick() }
             .padding(vertical = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -56,15 +58,15 @@ internal fun BettrSelectionCard(
     ) {
         Box(
             modifier = Modifier
-                .size(24.dp)
+                .size(32.dp)
                 .clip(CircleShape)
                 .background(if (selected) BettrGrayLight else BettrGreenLight),
             contentAlignment = Alignment.Center
         ) {
             Image(
-                painter = painterResource(Res.drawable.house_icon),
+                painter = icon,
                 contentDescription = null,
-                modifier = Modifier.size(12.dp),
+                modifier = Modifier.size(16.dp),
                 colorFilter = if (selected) ColorFilter.tint(BettrGray) else ColorFilter.tint(
                     BettrGreenDark
                 )
@@ -83,6 +85,7 @@ internal fun BettrSelectionCard(
 private fun BettrSelectionCardPreview() {
     BettrSelectionCard(
         text = "Comprar um imóvel",
+        icon = painterResource(Res.drawable.house_icon),
         selected = false,
         onClick = {}
     )
@@ -93,6 +96,7 @@ private fun BettrSelectionCardPreview() {
 private fun BettrSelectionCardSelectedPreview() {
     BettrSelectionCard(
         text = "Comprar um imóvel",
+        icon = painterResource(Res.drawable.house_icon),
         selected = true,
         onClick = {}
     )
