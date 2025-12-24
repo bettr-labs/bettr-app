@@ -42,6 +42,7 @@ import org.example.bettr.designsystem.components.BettrButtonSize
 import org.example.bettr.designsystem.components.BettrChecklistCard
 import org.example.bettr.designsystem.components.BettrHighlightBox
 import org.example.bettr.designsystem.components.BettrHighlightBoxColor
+import org.example.bettr.designsystem.components.BettrLoading
 import org.example.bettr.designsystem.components.BettrPagination
 import org.example.bettr.designsystem.theme.BettrGrayDark
 import org.example.bettr.designsystem.theme.BettrGrayDarker
@@ -60,8 +61,8 @@ import org.koin.compose.koinInject
 
 @Composable
 internal fun BetTypesScreen(
-    onNavigateBack: () -> Unit = {},
-    onNavigateToNextScreen: () -> Unit = {},
+    onNavigateBack: () -> Unit,
+    onNavigateToNextScreen: () -> Unit,
     viewModel: BetTypesViewModel = koinInject()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -73,14 +74,7 @@ internal fun BetTypesScreen(
     EffectsHandler(viewModel, onNavigateBack, onNavigateToNextScreen)
 
     when (val state = uiState) {
-        is BetTypesUiState.Loading -> {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
-        }
+        is BetTypesUiState.Loading -> BettrLoading()
         is BetTypesUiState.Resumed -> {
             BetTypesScreenContent(
                 betTypes = state.model.items,

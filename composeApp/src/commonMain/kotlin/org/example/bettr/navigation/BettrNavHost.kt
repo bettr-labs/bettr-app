@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import org.example.bettr.presentation.bettypes.view.BetTypesScreen
+import org.example.bettr.presentation.dreams.view.DreamSelectionScreen
 import org.example.bettr.presentation.welcome.view.WelcomeScreen
 
 @Composable
@@ -26,8 +27,14 @@ fun BettrNavHost(
             BetTypesScreen(
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToNextScreen = {
-                    // TODO: Navigate to next screen when implemented
+                    navController.navigate(Route.DreamSelection)
                 }
+            )
+        }
+        composable<Route.DreamSelection> {
+            DreamSelectionScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToNextScreen = { /* TODO */ }
             )
         }
     }

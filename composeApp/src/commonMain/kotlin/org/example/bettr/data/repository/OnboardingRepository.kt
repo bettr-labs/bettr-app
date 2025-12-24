@@ -1,18 +1,15 @@
 package org.example.bettr.data.repository
 
-import org.example.bettr.data.network.api.OnboardingApi
+import org.example.bettr.data.network.BettrClient
 import org.example.bettr.data.network.model.DreamTypeDto
+import org.example.bettr.data.network.util.NetworkError
+import org.example.bettr.data.network.util.Result
 
 class OnboardingRepository(
-    private val onboardingApi: OnboardingApi
+    private val bettrClient: BettrClient
 ) {
-    suspend fun getDreamTypes(): Result<List<DreamTypeDto>> {
-        return try {
-            val dreamTypes = onboardingApi.getDreamTypes()
-            Result.success(dreamTypes)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
+    suspend fun getDreamTypes(): Result<List<DreamTypeDto>, NetworkError> {
+        return bettrClient.getDreams()
     }
 }
 

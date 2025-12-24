@@ -33,6 +33,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.koin.android)
             implementation(libs.ktor.client.okhttp)
+            implementation(libs.okhttp.logging.interceptor)
         }
         commonMain.dependencies {
             implementation(compose.runtime)

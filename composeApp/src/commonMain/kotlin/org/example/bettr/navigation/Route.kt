@@ -8,5 +8,8 @@ sealed interface Route {
 
     @Serializable
     data object BetTypes : Route
+
+    @Serializable
+    data object DreamSelection : Route
 }
 

@@ -2,6 +2,7 @@ package org.example.bettr.di
 
 import org.example.bettr.domain.usecase.GetDreamTypesUseCase
 import org.example.bettr.presentation.bettypes.viewmodel.BetTypesViewModel
+import org.example.bettr.presentation.dreams.viewmodel.DreamSelectionViewModel
 import org.example.bettr.presentation.welcome.viewmodel.WelcomeViewModel
 import org.koin.dsl.module
 
@@ -12,5 +13,6 @@ val appModule = module {
     // ViewModels
     single { WelcomeViewModel() }
     factory { BetTypesViewModel() }
+    factory { DreamSelectionViewModel(get()) }
 }
 
