@@ -1,11 +1,10 @@
 package org.example.bettr.data.network.api
 
-import de.jensklingenberg.ktorfit.http.GET
-import org.example.bettr.data.network.model.DreamTypeDto
+import org.example.bettr.data.network.dto.DreamTypeDto
+import org.example.bettr.data.network.util.NetworkError
+import org.example.bettr.data.network.util.Result
 
 interface OnboardingApi {
-
-    @GET("dreams-types")
-    suspend fun getDreamTypes(): List<DreamTypeDto>
+    suspend fun getDreamTypes(): Result<List<DreamTypeDto>, NetworkError>
 }
 

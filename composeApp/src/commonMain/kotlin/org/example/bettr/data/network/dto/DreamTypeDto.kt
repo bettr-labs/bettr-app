@@ -1,4 +1,4 @@
-package org.example.bettr.data.network.model
+package org.example.bettr.data.network.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
