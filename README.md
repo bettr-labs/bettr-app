@@ -1,35 +1,86 @@
-This is a Kotlin Multiplatform project targeting Android, iOS.
+# Bettr 💚
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
+> Transforme seus impulsos em conquistas. Um aplicativo de apoio para quem busca controlar vícios em apostas e construir um futuro financeiro mais saudável.
 
-* [/iosApp](./iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+[![Kotlin](https://img.shields.io/badge/Kotlin-1.9+-purple.svg)](https://kotlinlang.org)
+[![Compose Multiplatform](https://img.shields.io/badge/Compose%20Multiplatform-1.6+-blue.svg)](https://www.jetbrains.com/lp/compose-multiplatform/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-### Build and Run Android Application
+## 🚀 Sobre o Projeto
 
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
+**Bettr** é um aplicativo **Kotlin Multiplatform** desenvolvido para auxiliar indivíduos que enfrentam desafios com vícios em apostas. Nossa missão é oferecer ferramentas práticas para:
 
-### Build and Run iOS Application
+- 🛡️ **Controlar Impulsos** - Técnicas e recursos para reconhecer e gerenciar gatilhos de apostas
+- 💰 **Educação Financeira** - Aprenda a poupar e investir de forma consciente
+- 🎯 **Redirecionamento de Objetivos** - Transforme sonhos em metas alcançáveis através de planejamento financeiro
+- 📊 **Acompanhamento de Progresso** - Visualize sua jornada de recuperação e conquistas financeiras
 
-To build and run the development version of the iOS app, use the run configuration from the run widget
-in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and run it from there.
 
----
+### 🎨 Aspectos Técnicos
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+- 🌐 **Multiplataforma** - Código compartilhado entre Android e iOS
+- 🔄 **Gerenciamento de Estado Reativo** - Interface responsiva e fluida
+- 🌍 **API Integration** - Sincronização segura de dados
+- 🎯 **Clean Architecture** - Arquitetura escalável e testável
+- 💉 **Dependency Injection** - Código modular e de fácil manutenção
+
+## 🛠 Stack Tecnológica
+
+### Core
+- **Kotlin Multiplatform** - Código compartilhado entre plataformas
+- **Compose Multiplatform** - UI declarativa moderna
+- **Coroutines** - Programação assíncrona
+
+### Networking
+- **Ktor Client** - Cliente HTTP multiplataforma
+- **Kotlinx Serialization** - Serialização JSON type-safe
+
+### Arquitetura
+- **MVVM + Clean Architecture** - Separação clara de responsabilidades
+- **Koin** - Injeção de dependências
+- **StateFlow** - Gerenciamento de estado reativo
+
+## 📱 Plataformas Suportadas
+
+- ✅ **Android**
+- ✅ **iOS**
+
+## 🚦 Getting Started
+
+### Pré-requisitos
+
+- **JDK 17+**
+- **Android Studio** Hedgehog ou superior
+- **Xcode 15+** (para desenvolvimento iOS)
+- **Kotlin 1.9+**
+
+### 🤖 Build e Run - Android
+
+1. Clone o repositório:
+```bash
+git clone https://github.com/bettr-labs/bettr-app.git
+cd bettr
+```
+
+2. Abra o projeto no Android Studio
+
+3. Execute o app:
+```bash
+./gradlew :composeApp:assembleDebug
+```
+
+Ou use o botão **Run** no Android Studio.
+
+### 🍎 Build e Run - iOS
+
+1. Abra o diretório `/iosApp` no Xcode
+
+2. Configure seu time de desenvolvimento
+
+3. Selecione um simulador ou dispositivo
+
+4. Clique em **Run** (⌘R)
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
