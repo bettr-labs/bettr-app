@@ -46,10 +46,9 @@ internal fun BettrSelectionCard(
             .clip(RoundedCornerShape(20.dp))
             .border(
                 width = 1.dp,
-                color = if (selected) BettrGrayLight else BettrGray,
+                color = if (selected) BettrGrayLight.copy(alpha = 0.5f) else BettrGrayLight,
                 RoundedCornerShape(20.dp)
             )
-            .background(BettrNeutralBackground)
             .clickable { onClick() }
             .padding(vertical = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -60,27 +59,27 @@ internal fun BettrSelectionCard(
             modifier = Modifier
                 .size(32.dp)
                 .clip(CircleShape)
-                .background(if (selected) BettrGrayLight else BettrGreenLight),
+                .background(if (selected) BettrGrayLight.copy(alpha = 0.5f) else BettrGreenLight),
             contentAlignment = Alignment.Center
         ) {
             Image(
                 painter = icon,
                 contentDescription = null,
                 modifier = Modifier.size(16.dp),
-                colorFilter = if (selected) ColorFilter.tint(BettrGray) else ColorFilter.tint(
+                colorFilter = if (selected) ColorFilter.tint(BettrGray.copy(alpha = 0.5f)) else ColorFilter.tint(
                     BettrGreenDark
                 )
             )
         }
         Text(
             text = text,
-            style = BettrTextStyles.labelSmall(),
-            color = if (selected) BettrGray else BettrGrayDarker,
+            style = BettrTextStyles.labelLarge(),
+            color = if (selected) BettrGray.copy(alpha = 0.5f) else BettrGrayDarker,
         )
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun BettrSelectionCardPreview() {
     BettrSelectionCard(
@@ -91,7 +90,7 @@ private fun BettrSelectionCardPreview() {
     )
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun BettrSelectionCardSelectedPreview() {
     BettrSelectionCard(

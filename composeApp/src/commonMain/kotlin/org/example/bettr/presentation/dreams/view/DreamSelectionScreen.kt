@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,6 +24,7 @@ import bettr.composeapp.generated.resources.Res
 import bettr.composeapp.generated.resources.continue_button
 import bettr.composeapp.generated.resources.dream_selection_title
 import bettr.composeapp.generated.resources.dream_selection_paragraph
+import bettr.composeapp.generated.resources.dream_selection_tagline
 import org.example.bettr.designsystem.components.BettrButton
 import org.example.bettr.designsystem.components.BettrButtonColor
 import org.example.bettr.designsystem.components.BettrButtonSize
@@ -133,6 +136,16 @@ private fun DreamSelectionScreenContent(
                 textAlign = TextAlign.Center,
                 color = BettrGrayDark
             )
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                text = stringResource(Res.string.dream_selection_tagline),
+                style = BettrTextStyles.bodyMedium(),
+                textAlign = TextAlign.Left,
+                color = BettrGrayDark
+            )
             Spacer(modifier = Modifier.height(24.dp))
 
             val selectedItems = filteredItems.filter { it.isSelected }
@@ -165,6 +178,8 @@ private fun DreamSelectionGrid(
     onItemClick: (DreamType) -> Unit
 ) {
     Column(
+        modifier = Modifier
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         items.chunked(2).forEach { rowItems ->

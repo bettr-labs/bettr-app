@@ -3,6 +3,7 @@ package org.example.bettr.designsystem.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -90,6 +91,7 @@ fun BettrSelectedListCard(
             painter = painterResource(Res.drawable.x_icon),
             contentDescription = null,
             modifier = Modifier.size(16.dp)
+                .clickable(onClick = onClick),
         )
     }
 }
