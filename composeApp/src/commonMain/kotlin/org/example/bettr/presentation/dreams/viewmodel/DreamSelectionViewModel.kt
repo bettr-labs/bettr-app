@@ -63,15 +63,32 @@ internal class DreamSelectionViewModel(
     private fun handleItemClick(dreamType: DreamType) {
         val currentState = _uiState.value
         if (currentState is DreamSelectionUiState.Resumed) {
-            val updatedItems = currentState.model.items.map { item ->
+            val currentItems = currentState.model.items
+            val selectedCount = currentItems.count { it.isSelected }
+            val maxSelection = 3
+
+            val updatedItems = currentItems.map { item ->
                 if (item.type == dreamType) {
-                    item.copy(isSelected = !item.isSelected)
+                    val canToggle = item.isSelected || selectedCount < maxSelection
+                    if (canToggle) {
+                        item.copy(isSelected = !item.isSelected)
+                    } else {
+                        item
+                    }
                 } else {
                     item
                 }
             }
+
+            val newSelectedCount = updatedItems.count { it.isSelected }
+            val isLimitReached = newSelectedCount >= maxSelection
+
+            val finalItems = updatedItems.map { item ->
+                item.copy(visuallyDisabled = if (isLimitReached) true else item.isSelected)
+            }
+
             _uiState.value = DreamSelectionUiState.Resumed(
-                model = DreamSelectionUiModel(items = updatedItems)
+                model = DreamSelectionUiModel(items = finalItems)
             )
         }
     }

@@ -191,7 +191,7 @@ private fun DreamSelectionGrid(
                     BettrSelectionCard(
                         text = item.label,
                         icon = painterResource(item.type.toIcon()),
-                        selected = item.isSelected,
+                        selected = item.visuallyDisabled,
                         onClick = { onItemClick(item.type) }
                     )
                 }

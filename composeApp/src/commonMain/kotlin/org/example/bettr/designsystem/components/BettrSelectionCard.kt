@@ -27,7 +27,6 @@ import org.example.bettr.designsystem.theme.BettrGrayDarker
 import org.example.bettr.designsystem.theme.BettrGrayLight
 import org.example.bettr.designsystem.theme.BettrGreenDark
 import org.example.bettr.designsystem.theme.BettrGreenLight
-import org.example.bettr.designsystem.theme.BettrNeutralBackground
 import org.example.bettr.designsystem.theme.BettrTextStyles
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -49,7 +48,7 @@ internal fun BettrSelectionCard(
                 color = if (selected) BettrGrayLight.copy(alpha = 0.5f) else BettrGrayLight,
                 RoundedCornerShape(20.dp)
             )
-            .clickable { onClick() }
+            .clickable(enabled = !selected) { onClick() }
             .padding(vertical = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
