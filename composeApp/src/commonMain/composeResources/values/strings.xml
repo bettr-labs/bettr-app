@@ -21,7 +21,7 @@
     <string name="bet_types_casino">Cassino Online</string>
     <string name="bet_types_tiger">Jogo do Tigrinho</string>
     <string name="bet_types_poker">Poker</string>
-    <string name="bet_types_lottery">Loteria</string>
+    <string name="bet_types_lottery">Loteria/Raspadinha</string>
     <string name="bet_types_other">Outros jogos de azar</string>
     <string name="bet_types_button">Próximo</string>
 
