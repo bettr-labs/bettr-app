@@ -1,4 +1,4 @@
-package org.example.bettr.presentation.dreams.model
+package org.example.bettr.presentation.dreamselection.model
 
 import org.example.bettr.domain.model.DreamType
 

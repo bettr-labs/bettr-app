@@ -1,4 +1,4 @@
-package org.example.bettr.presentation.dreams.mapper
+package org.example.bettr.presentation.dreamselection.mapper
 
 import bettr.composeapp.generated.resources.Res
 import bettr.composeapp.generated.resources.car_icon

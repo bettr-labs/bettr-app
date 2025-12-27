@@ -4,7 +4,14 @@
 1. [Visão Geral](#visão-geral)
 2. [Stack Tecnológica](#stack-tecnológica)
 3. [Estrutura de Camadas](#estrutura-de-camadas)
-4. [Padrões e Convenções](#padrões-e-convenções)
+4. [Padr��es e Convenções](#padrões-e-convenções)
+   - [Camada de Dados](#1-camada-de-dados-data-layer)
+   - [Camada de Domínio](#2-camada-de-domínio-domain-layer)
+   - [Camada de Apresentação](#3-camada-de-apresentação-presentation-layer)
+   - [Design System](#4-design-system)
+   - [Dependency Injection](#5-dependency-injection-koin)
+   - [Navegação](#6-navegação)
+   - [Cache e Gerenciamento de Estado](#7-cache-e-gerenciamento-de-estado)
 5. [Guia Prático: Como Adicionar Novas Features](#guia-prático-como-adicionar-novas-features)
 6. [Exemplos Completos](#exemplos-completos)
 7. [Referências de Código](#referências-de-código)
@@ -59,7 +66,7 @@ composeApp/src/commonMain/kotlin/org/example/bettr/
 │   │   └── HttpClientFactory.kt
 │   └── repository/            # Repositórios (intermediário entre API e Domain)
 │
-├── domain/                    # Camada de Domínio (Regras de Negócio)
+├── domain/                    # Camada de Dom��nio (Regras de Negócio)
 │   ├── model/                 # Modelos de domínio (entidades de negócio)
 │   └── usecase/               # Casos de uso (lógica de negócio)
 │
@@ -69,7 +76,7 @@ composeApp/src/commonMain/kotlin/org/example/bettr/
 │   │   ├── viewmodel/         # ViewModels
 │   │   ├── state/             # Estados da UI
 │   │   ├── action/            # Ações da UI
-│   │   ├── effect/            # Efeitos colaterais (navegação, toasts)
+│   │   ├���─ effect/            # Efeitos colaterais (navegação, toasts)
 │   │   ├── model/             # Modelos específicos da UI
 │   │   └── mapper/            # Mappers (Domain → UI)
 │
@@ -533,11 +540,11 @@ object DreamTypeToIconMapper {
 #### Estrutura
 ```
 designsystem/
-├── components/        # Componentes reutilizáveis
+├── components/        # Componentes reutilzáveis
 │   ├── BettrButton.kt
 │   ├── BettrChecklistCard.kt
-│   ├── BettrSelectionCard.kt
-│   ├── BettrHighlightBox.kt
+���   ├── BettrSelectionCard.kt
+���   ├── BettrHighlightBox.kt
 │   ├── BettrPagination.kt
 │   ├── BettrLoading.kt
 │   └── BettrGenericError.kt
@@ -700,7 +707,186 @@ fun BettrNavHost(navController: NavHostController) {
 navController.navigate(Route.DreamSelection)
 ```
 
+**⚠️ IMPORTANTE: NavHost NÃO deve usar Use Cases**
+
+Navigation components (NavHost, NavController) devem apenas:
+- ✅ Definir rotas
+- ✅ Compor telas
+- ✅ Passar argumentos de navegação
+- ✅ Fornecer callbacks de navegação
+
+Navigation components NÃO devem:
+- ❌ Injetar use cases
+- ❌ Acessar camada de domínio/dados
+- ❌ Tomar decisões baseadas em lógica de negócio
+- ❌ Fazer queries de dados para determinar navegação
+
+**Padrão Correto:**
+```kotlin
+// ❌ ERRADO: NavHost acessando use case
+@Composable
+fun BettrNavHost(
+    navController: NavHostController,
+    getDreamsUseCase: GetDreamsUseCase = koinInject() // ❌ ERRADO
+) {
+    val totalDreams = getDreamsUseCase() // ❌ ERRADO
+    // ...
+}
+
+// ✅ CORRETO: Screen/ViewModel gerencia lógica
+@Composable
+fun DreamSettingsScreen(
+    currentIndex: Int,
+    onNavigateToNext: () -> Unit,
+    onNavigateToComplete: () -> Unit,
+    getDreamsUseCase: GetDreamsUseCase = koinInject() // ✅ CORRETO
+) {
+    val totalDreams = getDreamsUseCase() // ✅ CORRETO
+    
+    val handleContinue = {
+        if (currentIndex + 1 < totalDreams) {
+            onNavigateToNext()
+        } else {
+            onNavigateToComplete()
+        }
+    }
+}
+```
+
 ---
+
+### 7. Cache e Gerenciamento de Estado
+
+**Localização**: `data/cache/`
+
+Para fluxos que precisam manter estado temporário (como onboarding), use um cache em memória com use cases para abstrair o acesso.
+
+#### OnboardingCache
+```kotlin
+class OnboardingCache {
+    private var selectedDreams: List<DreamTypeModel> = emptyList()
+    private var configuredDreams: MutableMap<Int, DreamConfigurationModel> = mutableMapOf()
+    
+    fun setSelectedDreams(dreams: List<DreamTypeModel>) {
+        selectedDreams = dreams
+        configuredDreams.clear()
+        dreams.forEachIndexed { index, _ ->
+            configuredDreams[index] = DreamConfigurationModel()
+        }
+    }
+    
+    fun getDreamByIndex(index: Int): DreamTypeModel? = selectedDreams.getOrNull(index)
+    
+    fun saveDreamConfiguration(index: Int, configuration: DreamConfigurationModel) {
+        configuredDreams[index] = configuration
+    }
+    
+    fun clear() {
+        selectedDreams = emptyList()
+        configuredDreams.clear()
+    }
+}
+```
+
+#### Data Models para Cache
+```kotlin
+data class DreamConfigurationModel(
+    val targetAmount: Double? = null,
+    val targetDate: String? = null
+) {
+    fun isComplete(): Boolean = targetAmount != null && targetDate != null
+}
+
+data class ConfiguredDreamModel(
+    val dreamType: DreamTypeModel,
+    val configuration: DreamConfigurationModel
+)
+```
+
+#### Use Cases para Cache
+**⚠️ IMPORTANTE:** ViewModels NUNCA devem acessar cache diretamente. Use use cases!
+
+```kotlin
+// SetSelectedDreamsUseCase.kt
+class SetSelectedDreamsUseCase(
+    private val onboardingCache: OnboardingCache
+) {
+    operator fun invoke(dreams: List<DreamTypeModel>) {
+        onboardingCache.setSelectedDreams(dreams)
+    }
+}
+
+// GetDreamByIndexUseCase.kt
+class GetDreamByIndexUseCase(
+    private val onboardingCache: OnboardingCache
+) {
+    operator fun invoke(index: Int): DreamTypeModel? {
+        return onboardingCache.getDreamByIndex(index)
+    }
+}
+
+// SaveDreamConfigurationUseCase.kt
+class SaveDreamConfigurationUseCase(
+    private val onboardingCache: OnboardingCache
+) {
+    operator fun invoke(index: Int, targetAmount: Double, targetDate: String) {
+        val configuration = DreamConfigurationModel(
+            targetAmount = targetAmount,
+            targetDate = targetDate
+        )
+        onboardingCache.saveDreamConfiguration(index, configuration)
+    }
+}
+```
+
+#### Registrando no DI
+```kotlin
+val appModule = module {
+    // Cache como singleton
+    single { OnboardingCache() }
+    
+    // Use cases para cache
+    factory { SetSelectedDreamsUseCase(get()) }
+    factory { GetDreamByIndexUseCase(get()) }
+    factory { SaveDreamConfigurationUseCase(get()) }
+    
+    // ViewModels usam use cases, não cache diretamente
+    factory { DreamSelectionViewModel(get(), get()) } // getDreamTypesUseCase, setSelectedDreamsUseCase
+}
+```
+
+#### Usando no ViewModel
+```kotlin
+class DreamSelectionViewModel(
+    private val getDreamTypesUseCase: GetDreamTypesUseCase,
+    private val setSelectedDreamsUseCase: SetSelectedDreamsUseCase // ✅ Use case, não cache
+) : ViewModel() {
+    
+    private fun handleClickContinue() {
+        val selectedDreams = // ... coletar dreams selecionados
+        
+        // ✅ CORRETO: Usar use case
+        setSelectedDreamsUseCase(selectedDreams)
+        
+        // ❌ ERRADO: Acessar cache diretamente
+        // onboardingCache.setSelectedDreams(selectedDreams)
+    }
+}
+```
+
+**Benefícios desta abordagem:**
+- ✅ ViewModels não dependem de entidades da camada de dados
+- ✅ Separação clara de camadas
+- ✅ Fácil de testar (mock use cases)
+- ✅ Fácil de trocar implementação de cache
+
+**Fluxo de Dados:**
+```
+UI → ViewModel → Use Case → Cache/Repository → Data Layer
+```
+
+---
+
 
 ## 🚀 Guia Prático: Como Adicionar Novas Features
 

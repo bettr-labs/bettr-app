@@ -1,4 +1,4 @@
-package org.example.bettr.presentation.dreams.action
+package org.example.bettr.presentation.dreamselection.action
 
 import org.example.bettr.domain.model.DreamType
 
@@ -7,5 +7,6 @@ internal fun interface DreamSelectionAction {
     sealed class Action {
         data object OnInit : Action()
         data class OnItemClicked(val dreamType: DreamType) : Action()
+        data object OnClickContinue : Action()
     }
 }

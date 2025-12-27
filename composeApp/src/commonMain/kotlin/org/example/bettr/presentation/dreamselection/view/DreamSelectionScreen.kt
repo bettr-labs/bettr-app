@@ -1,4 +1,4 @@
-package org.example.bettr.presentation.dreams.view
+package org.example.bettr.presentation.dreamselection.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -38,11 +38,12 @@ import org.example.bettr.designsystem.theme.BettrGrayDarker
 import org.example.bettr.designsystem.theme.BettrNeutralBackground
 import org.example.bettr.designsystem.theme.BettrTextStyles
 import org.example.bettr.domain.model.DreamType
-import org.example.bettr.presentation.dreams.action.DreamSelectionAction
-import org.example.bettr.presentation.dreams.mapper.toIcon
-import org.example.bettr.presentation.dreams.model.DreamSelectionItemUiModel
-import org.example.bettr.presentation.dreams.state.DreamSelectionUiState
-import org.example.bettr.presentation.dreams.viewmodel.DreamSelectionViewModel
+import org.example.bettr.presentation.dreamselection.action.DreamSelectionAction
+import org.example.bettr.presentation.dreamselection.effect.DreamSelectionUiEffect
+import org.example.bettr.presentation.dreamselection.mapper.toIcon
+import org.example.bettr.presentation.dreamselection.model.DreamSelectionItemUiModel
+import org.example.bettr.presentation.dreamselection.state.DreamSelectionUiState
+import org.example.bettr.presentation.dreamselection.viewmodel.DreamSelectionViewModel
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -51,7 +52,6 @@ import org.koin.compose.koinInject
 @Composable
 internal fun DreamSelectionScreen(
     viewModel: DreamSelectionViewModel = koinInject(),
-    onNavigateBack: () -> Unit,
     onNavigateToNextScreen: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -59,6 +59,8 @@ internal fun DreamSelectionScreen(
     LaunchedEffect(Unit) {
         viewModel.sendAction(DreamSelectionAction.Action.OnInit)
     }
+
+    EffectsHandler(viewModel, onNavigateToNextScreen)
 
     when (uiState) {
         DreamSelectionUiState.Loading -> BettrLoading()
@@ -68,7 +70,8 @@ internal fun DreamSelectionScreen(
                 items = items,
                 onItemClick = {
                     viewModel.sendAction(DreamSelectionAction.Action.OnItemClicked(it))
-                }
+                },
+                onClickContinue = { viewModel.sendAction(DreamSelectionAction.Action.OnClickContinue) }
             )
         }
         is DreamSelectionUiState.Error -> {
@@ -86,7 +89,8 @@ internal fun DreamSelectionScreen(
 @Composable
 private fun DreamSelectionScreenContent(
     items: List<DreamSelectionItemUiModel>,
-    onItemClick: (DreamType) -> Unit
+    onItemClick: (DreamType) -> Unit,
+    onClickContinue: () -> Unit
 ) {
     val filteredItems = items.filter { it.type != DreamType.OTHER }
 
@@ -111,7 +115,7 @@ private fun DreamSelectionScreenContent(
                     size = BettrButtonSize.SmallText,
                     color = BettrButtonColor.GrayDark,
                     enabled = items.any { it.isSelected },
-                    onClick = {}
+                    onClick = { onClickContinue() }
                 )
             }
         }
@@ -200,6 +204,21 @@ private fun DreamSelectionGrid(
     }
 }
 
+@Composable
+private fun EffectsHandler(
+    viewModel: DreamSelectionViewModel,
+    onNavigateToNextScreen: () -> Unit
+) {
+    LaunchedEffect(Unit) {
+        viewModel.uiEffect.collect { effect ->
+            when (effect) {
+                is DreamSelectionUiEffect.NavigateToNextScreen -> onNavigateToNextScreen()
+                else -> Unit
+            }
+        }
+    }
+}
+
 private fun getMockDreamItems(): List<DreamSelectionItemUiModel> = listOf(
     DreamSelectionItemUiModel(type = DreamType.HOME, label = "Comprar um imóvel", isSelected = false),
     DreamSelectionItemUiModel(type = DreamType.TRAVEL, label = "Viajar", isSelected = false),
@@ -216,6 +235,7 @@ private fun getMockDreamItems(): List<DreamSelectionItemUiModel> = listOf(
 private fun DreamSelectionScreenPreview() {
     DreamSelectionScreenContent(
         items = getMockDreamItems(),
-        onItemClick = {}
+        onItemClick = { },
+        onClickContinue = { }
     )
 }

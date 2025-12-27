@@ -1,29 +1,39 @@
-package org.example.bettr.presentation.dreams.viewmodel
+package org.example.bettr.presentation.dreamselection.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.example.bettr.data.network.util.NetworkError
 import org.example.bettr.data.network.util.Result
 import org.example.bettr.domain.model.DreamType
+import org.example.bettr.domain.model.DreamTypeModel
 import org.example.bettr.domain.usecase.GetDreamTypesUseCase
-import org.example.bettr.presentation.dreams.action.DreamSelectionAction
-import org.example.bettr.presentation.dreams.model.DreamSelectionItemUiModel
-import org.example.bettr.presentation.dreams.model.DreamSelectionUiModel
-import org.example.bettr.presentation.dreams.state.DreamSelectionUiState
+import org.example.bettr.domain.usecase.SetSelectedDreamsUseCase
+import org.example.bettr.presentation.dreamselection.action.DreamSelectionAction
+import org.example.bettr.presentation.dreamselection.effect.DreamSelectionUiEffect
+import org.example.bettr.presentation.dreamselection.model.DreamSelectionItemUiModel
+import org.example.bettr.presentation.dreamselection.model.DreamSelectionUiModel
+import org.example.bettr.presentation.dreamselection.state.DreamSelectionUiState
 
 internal class DreamSelectionViewModel(
-    private val getDreamTypesUseCase: GetDreamTypesUseCase
+    private val getDreamTypesUseCase: GetDreamTypesUseCase,
+    private val setSelectedDreamsUseCase: SetSelectedDreamsUseCase
 ) : ViewModel(), DreamSelectionAction {
     private val _uiState = MutableStateFlow<DreamSelectionUiState>(DreamSelectionUiState.Loading)
     val uiState = _uiState.asStateFlow()
+
+    private val _uiEffect = MutableSharedFlow<DreamSelectionUiEffect?>(0, 1)
+    val uiEffect = _uiEffect.asSharedFlow()
 
     override fun sendAction(action: DreamSelectionAction.Action) {
         when (action) {
             is DreamSelectionAction.Action.OnInit -> onInit()
             is DreamSelectionAction.Action.OnItemClicked -> handleItemClick(action.dreamType)
+            is DreamSelectionAction.Action.OnClickContinue -> handleClickContinue()
         }
     }
 
@@ -90,6 +100,27 @@ internal class DreamSelectionViewModel(
             _uiState.value = DreamSelectionUiState.Resumed(
                 model = DreamSelectionUiModel(items = finalItems)
             )
+        }
+    }
+
+    private fun handleClickContinue() {
+        val currentState = _uiState.value
+        if (currentState is DreamSelectionUiState.Resumed) {
+            // Build list of DreamTypeModel with full data (type + label)
+            val selectedDreamsModels = currentState.model.items
+                .filter { it.isSelected }
+                .map { item ->
+                    DreamTypeModel(
+                        type = item.type,
+                        label = item.label
+                    )
+                }
+
+            // Store in cache via use case
+            setSelectedDreamsUseCase(selectedDreamsModels)
+
+            // Emit simple navigation effect
+            _uiEffect.tryEmit(DreamSelectionUiEffect.NavigateToNextScreen)
         }
     }
 }

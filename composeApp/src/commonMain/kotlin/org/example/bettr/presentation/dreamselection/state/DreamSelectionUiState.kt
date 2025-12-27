@@ -1,6 +1,6 @@
-package org.example.bettr.presentation.dreams.state
+package org.example.bettr.presentation.dreamselection.state
 
-import org.example.bettr.presentation.dreams.model.DreamSelectionUiModel
+import org.example.bettr.presentation.dreamselection.model.DreamSelectionUiModel
 
 internal sealed class DreamSelectionUiState {
     data object Loading : DreamSelectionUiState()
