@@ -106,7 +106,6 @@ internal class DreamSelectionViewModel(
     private fun handleClickContinue() {
         val currentState = _uiState.value
         if (currentState is DreamSelectionUiState.Resumed) {
-            // Build list of DreamTypeModel with full data (type + label)
             val selectedDreamsModels = currentState.model.items
                 .filter { it.isSelected }
                 .map { item ->
@@ -116,10 +115,8 @@ internal class DreamSelectionViewModel(
                     )
                 }
 
-            // Store in cache via use case
             setSelectedDreamsUseCase(selectedDreamsModels)
 
-            // Emit simple navigation effect
             _uiEffect.tryEmit(DreamSelectionUiEffect.NavigateToNextScreen)
         }
     }

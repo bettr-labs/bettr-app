@@ -36,7 +36,6 @@ fun BettrNavHost(
         composable<Route.DreamSelection> {
             DreamSelectionScreen(
                 onNavigateToNextScreen = {
-                    // Navigate to the first dream settings screen
                     navController.navigate(Route.DreamSettings(currentIndex = 0))
                 }
             )
@@ -48,15 +47,12 @@ fun BettrNavHost(
             DreamSettingsScreen(
                 currentIndex = currentIndex,
                 onNavigateToNextDream = {
-                    // Navigate to the next dream settings screen
-                    // The screen/viewmodel determines if there's a next dream
                     navController.navigate(
                         Route.DreamSettings(currentIndex = currentIndex + 1)
                     )
                 },
                 onNavigateToNextScreen = {
                     // TODO: Navigate to the next screen after all dreams are configured
-                    // For now, just pop back to welcome
                     navController.popBackStack(Route.Welcome, inclusive = false)
                 }
             )

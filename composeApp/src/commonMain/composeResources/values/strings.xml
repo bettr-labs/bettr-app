@@ -31,5 +31,16 @@
     <string name="dream_selection_tagline">Escolha até 3 sonhos</string>
     <string name="dream_selection_highlight">Lembre-se: seus sonhos são mais importantes que qualquer aposta.</string>
 
+    <!-- Dream Settings Screen -->
+    <string name="dream_settings_dream_value_title">Valor do sonho</string>
+    <string name="dream_settings_dream_value_description">Quanto você deseja economizar?</string>
+    <string name="dream_settings_currency_placeholder">R$ 0,00</string>
+    <string name="dream_settings_dream_date_title">Quando você quer realizar esse sonho?</string>
+    <string name="dream_settings_dream_date_description">Opcional, mas ajuda a planejar melhor</string>
+    <string name="dream_settings_date_placeholder">DD/MM/AAAA</string>
+    <string name="dream_settings_description">Definir uma meta clara te ajuda a visualizar o progresso e manter o foco.</string>
+    <string name="dream_settings_highlight">Cada dia sem apostar é dinheiro que vai para o seu sonho.</string>
+    <string name="dream_settings_save_button">Salvar</string>
+
 </resources>
 

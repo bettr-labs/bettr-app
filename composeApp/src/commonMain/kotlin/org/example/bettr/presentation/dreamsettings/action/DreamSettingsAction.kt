@@ -5,7 +5,9 @@ internal fun interface DreamSettingsAction {
 
     sealed class Action {
         data object OnInit : Action()
-        // TODO: Add more actions as needed (e.g., OnSaveClicked, OnCancelClicked, etc.)
+        data class OnValueChanged(val value: String) : Action()
+        data class OnDateChanged(val date: String) : Action()
+        data object OnSaveClicked : Action()
     }
 }
 

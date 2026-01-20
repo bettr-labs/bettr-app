@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.example.bettr.domain.usecase.GetDreamByIndexUseCase
-import org.example.bettr.domain.usecase.GetDreamConfigurationUseCase
+import org.example.bettr.domain.usecase.GetTotalSelectedDreamsCountUseCase
 import org.example.bettr.domain.usecase.SaveDreamConfigurationUseCase
 import org.example.bettr.presentation.dreamsettings.action.DreamSettingsAction
 import org.example.bettr.presentation.dreamsettings.effect.DreamSettingsUiEffect
@@ -18,7 +18,7 @@ import org.example.bettr.presentation.dreamsettings.state.DreamSettingsUiState
 internal class DreamSettingsViewModel(
     private val currentIndex: Int,
     private val getDreamByIndexUseCase: GetDreamByIndexUseCase,
-    private val getDreamConfigurationUseCase: GetDreamConfigurationUseCase,
+    private val getTotalSelectedDreamsCountUseCase: GetTotalSelectedDreamsCountUseCase,
     private val saveDreamConfigurationUseCase: SaveDreamConfigurationUseCase
 ) : ViewModel(), DreamSettingsAction {
 
@@ -31,20 +31,24 @@ internal class DreamSettingsViewModel(
     override fun sendAction(action: DreamSettingsAction.Action) {
         when (action) {
             is DreamSettingsAction.Action.OnInit -> onInit()
-            // TODO: Handle other actions like OnSaveConfiguration
+            is DreamSettingsAction.Action.OnValueChanged -> onValueChanged(action.value)
+            is DreamSettingsAction.Action.OnDateChanged -> onDateChanged(action.date)
+            is DreamSettingsAction.Action.OnSaveClicked -> handleOnSaveClicked()
         }
     }
 
     private fun onInit() {
         viewModelScope.launch {
-            // Load dream data from cache via use case
             val dream = getDreamByIndexUseCase(currentIndex)
-            val configuration = getDreamConfigurationUseCase(currentIndex)
-
+            val totalDreams = getTotalSelectedDreamsCountUseCase()
             if (dream != null) {
                 _uiState.value = DreamSettingsUiState.Resumed(
                     model = DreamSettingsUiModel(
-                        // TODO: Add dream and configuration data to UI model when implementing the form
+                        dreamType = dream.type,
+                        label = dream.label,
+                        value = "",
+                        date = "",
+                        totalDreams = totalDreams
                     )
                 )
             } else {
@@ -55,11 +59,53 @@ internal class DreamSettingsViewModel(
         }
     }
 
-    /**
-     * Save dream configuration via use case
-     * Call this when user completes the form on this screen
-     */
-    fun saveDreamConfiguration(targetAmount: Double, targetDate: String) {
-        saveDreamConfigurationUseCase(currentIndex, targetAmount, targetDate)
+    private fun onValueChanged(value: String) {
+        val currentState = _uiState.value
+        if (currentState is DreamSettingsUiState.Resumed) {
+            _uiState.value = DreamSettingsUiState.Resumed(
+                model = currentState.model.copy(value = value)
+            )
+        }
+    }
+
+    private fun onDateChanged(date: String) {
+        val currentState = _uiState.value
+        if (currentState is DreamSettingsUiState.Resumed) {
+            _uiState.value = DreamSettingsUiState.Resumed(
+                model = currentState.model.copy(date = date)
+            )
+        }
+    }
+
+    private fun handleOnSaveClicked() {
+        val state = _uiState.value
+        if (state is DreamSettingsUiState.Resumed) {
+            val model = state.model
+            try {
+                val targetAmount = model.value.takeIf { it.isNotEmpty() }?.toDoubleOrNull() ?: 0.0
+                saveDreamConfigurationUseCase(currentIndex, targetAmount, model.date)
+            } catch (e: Exception) {
+                // Log error if needed
+            }
+        }
+
+        val totalDreams = when (val currentState = _uiState.value) {
+            is DreamSettingsUiState.Resumed -> currentState.model.totalDreams
+            else -> 0
+        }
+
+        val nextIndex = currentIndex + 1
+        if (nextIndex < totalDreams) {
+            _uiEffect.tryEmit(DreamSettingsUiEffect.NavigateToNextDream)
+        } else {
+            collectAndSendAllDreamConfigurations()
+            _uiEffect.tryEmit(DreamSettingsUiEffect.NavigateToNextScreen)
+        }
+    }
+
+    private fun collectAndSendAllDreamConfigurations() {
+        // TODO: Implementar quando endpoint backend existir
+        // Coleta todas as configurações de sonhos dos índices 0, 1, 2...
+        // e as envia para o backend em uma única requisição
     }
 }
