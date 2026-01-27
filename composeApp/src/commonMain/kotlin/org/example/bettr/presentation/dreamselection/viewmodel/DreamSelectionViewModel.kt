@@ -1,23 +1,19 @@
 package org.example.bettr.presentation.dreamselection.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
-import org.example.bettr.data.network.util.NetworkError
-import org.example.bettr.data.network.util.Result
 import org.example.bettr.domain.model.DreamType
 import org.example.bettr.domain.model.DreamTypeModel
 import org.example.bettr.domain.usecase.GetDreamTypesUseCase
 import org.example.bettr.domain.usecase.SetSelectedDreamsUseCase
 import org.example.bettr.presentation.dreamselection.action.DreamSelectionAction
 import org.example.bettr.presentation.dreamselection.effect.DreamSelectionUiEffect
-import org.example.bettr.presentation.dreamselection.model.DreamSelectionItemUiModel
 import org.example.bettr.presentation.dreamselection.model.DreamSelectionUiModel
 import org.example.bettr.presentation.dreamselection.state.DreamSelectionUiState
+import org.example.bettr.presentation.dreamselection.view.getMockDreamItems
 
 internal class DreamSelectionViewModel(
     private val getDreamTypesUseCase: GetDreamTypesUseCase,
@@ -38,36 +34,41 @@ internal class DreamSelectionViewModel(
     }
 
     private fun onInit() {
-        viewModelScope.launch {
-            when (val result = getDreamTypesUseCase()) {
-                is Result.Success -> {
-                    val items = result.data.map { dreamType ->
-                        DreamSelectionItemUiModel(
-                            type = dreamType.type,
-                            label = dreamType.label,
-                            isSelected = false
-                        )
-                    }
-                    _uiState.value = DreamSelectionUiState.Resumed(
-                        model = DreamSelectionUiModel(items = items)
-                    )
-                }
-                is Result.Error -> {
-                    val errorMessage = when (result.error) {
-                        NetworkError.NO_INTERNET -> "Sem conexão com a internet"
-                        NetworkError.SERVER_ERROR -> "Erro no servidor"
-                        NetworkError.SERIALIZATION -> "Erro ao processar dados"
-                        NetworkError.REQUEST_TIMEOUT -> "Tempo de requisição esgotado"
-                        NetworkError.UNAUTHORIZED -> "Não autorizado"
-                        NetworkError.CONFLICT -> "Conflito na requisição"
-                        NetworkError.TOO_MANY_REQUESTS -> "Muitas requisições"
-                        NetworkError.PAYLOAD_TOO_LARGE -> "Dados muito grandes"
-                        NetworkError.UNKNOWN -> "Erro desconhecido"
-                    }
-                    _uiState.value = DreamSelectionUiState.Error(message = errorMessage)
-                }
-            }
-        }
+        // TODO: Replace with backend call when ready
+        val mockDreamItems = getMockDreamItems()
+        _uiState.value = DreamSelectionUiState.Resumed(
+            model = DreamSelectionUiModel(items = mockDreamItems)
+        )
+//        viewModelScope.launch {
+//            when (val result = getDreamTypesUseCase()) {
+//                is Result.Success -> {
+//                    val items = result.data.map { dreamType ->
+//                        DreamSelectionItemUiModel(
+//                            type = dreamType.type,
+//                            label = dreamType.label,
+//                            isSelected = false
+//                        )
+//                    }
+//                    _uiState.value = DreamSelectionUiState.Resumed(
+//                        model = DreamSelectionUiModel(items = items)
+//                    )
+//                }
+//                is Result.Error -> {
+//                    val errorMessage = when (result.error) {
+//                        NetworkError.NO_INTERNET -> "Sem conexão com a internet"
+//                        NetworkError.SERVER_ERROR -> "Erro no servidor"
+//                        NetworkError.SERIALIZATION -> "Erro ao processar dados"
+//                        NetworkError.REQUEST_TIMEOUT -> "Tempo de requisição esgotado"
+//                        NetworkError.UNAUTHORIZED -> "Não autorizado"
+//                        NetworkError.CONFLICT -> "Conflito na requisição"
+//                        NetworkError.TOO_MANY_REQUESTS -> "Muitas requisições"
+//                        NetworkError.PAYLOAD_TOO_LARGE -> "Dados muito grandes"
+//                        NetworkError.UNKNOWN -> "Erro desconhecido"
+//                    }
+//                    _uiState.value = DreamSelectionUiState.Error(message = errorMessage)
+//                }
+//            }
+//        }
     }
 
     private fun handleItemClick(dreamType: DreamType) {

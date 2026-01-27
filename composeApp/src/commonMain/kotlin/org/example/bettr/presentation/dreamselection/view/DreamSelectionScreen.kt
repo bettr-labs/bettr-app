@@ -219,10 +219,10 @@ private fun EffectsHandler(
     }
 }
 
-private fun getMockDreamItems(): List<DreamSelectionItemUiModel> = listOf(
+internal fun getMockDreamItems(): List<DreamSelectionItemUiModel> = listOf(
     DreamSelectionItemUiModel(type = DreamType.HOME, label = "Comprar um imóvel", isSelected = false),
     DreamSelectionItemUiModel(type = DreamType.TRAVEL, label = "Viajar", isSelected = false),
-    DreamSelectionItemUiModel(type = DreamType.MONEY, label = "Guardar dinheiro", isSelected = true),
+    DreamSelectionItemUiModel(type = DreamType.MONEY, label = "Guardar dinheiro", isSelected = false),
     DreamSelectionItemUiModel(type = DreamType.CAR, label = "Comprar um carro", isSelected = false),
     DreamSelectionItemUiModel(type = DreamType.STUDY, label = "Estudar/Curso", isSelected = false),
     DreamSelectionItemUiModel(type = DreamType.WEDDING, label = "Casamento", isSelected = false),

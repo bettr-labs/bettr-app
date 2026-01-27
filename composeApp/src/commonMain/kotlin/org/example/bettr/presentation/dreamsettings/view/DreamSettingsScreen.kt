@@ -12,6 +12,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import bettr.composeapp.generated.resources.Res
 import bettr.composeapp.generated.resources.dream_settings_currency_placeholder
@@ -51,6 +56,7 @@ internal fun DreamSettingsScreen(
     onNavigateToNextScreen: () -> Unit,
 ) {
     val viewModel: DreamSettingsViewModel = koinInject { parametersOf(currentIndex) }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     val uiState by viewModel.uiState.collectAsState()
 
@@ -73,7 +79,16 @@ internal fun DreamSettingsScreen(
             val uiModel = state.model
             DreamSettingsContent(
                 dreamLabel = uiModel.label,
+                value = uiModel.value,
+                date = uiModel.date,
+                onValueChanged = { newValue ->
+                    viewModel.sendAction(DreamSettingsAction.Action.OnValueChanged(newValue))
+                },
+                onDateChanged = { newDate ->
+                    viewModel.sendAction(DreamSettingsAction.Action.OnDateChanged(newDate))
+                },
                 onSaveClicked = {
+                    keyboardController?.hide()
                     viewModel.sendAction(DreamSettingsAction.Action.OnSaveClicked)
                 }
             )
@@ -93,8 +108,14 @@ internal fun DreamSettingsScreen(
 @Composable
 private fun DreamSettingsContent(
     dreamLabel: String,
+    value: String,
+    date: String,
+    onValueChanged: (String) -> Unit,
+    onDateChanged: (String) -> Unit,
     onSaveClicked: () -> Unit,
 ) {
+    val isButtonEnabled = value.isNotEmpty()
+
     Scaffold(
         topBar = {
             BettrPagination(
@@ -114,7 +135,7 @@ private fun DreamSettingsContent(
                     text = stringResource(Res.string.dream_settings_save_button),
                     size = BettrButtonSize.SmallText,
                     color = BettrButtonColor.GrayDark,
-                    enabled = true,
+                    enabled = isButtonEnabled,
                     onClick = onSaveClicked
                 )
             }
@@ -125,7 +146,13 @@ private fun DreamSettingsContent(
         ) {
             val dream = dreamLabel.lowercase()
             Text(
-                text = "Quanto custa seu sonho de $dream?",
+                text = buildAnnotatedString {
+                    append("Quanto custa seu sonho de ")
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                        append(dream)
+                    }
+                    append("?")
+                },
                 style = BettrTextStyles.headlineSmall(),
                 color = BettrGrayDarker,
             )
@@ -138,8 +165,8 @@ private fun DreamSettingsContent(
             Spacer(modifier = Modifier.height(24.dp))
             BettrDreamSettingsInputCard(
                 title = stringResource(Res.string.dream_settings_dream_value_title),
-                value = "",
-                onValueChange = {},
+                value = value,
+                onValueChange = onValueChanged,
                 icon = Res.drawable.pig_icon,
                 description = stringResource(Res.string.dream_settings_dream_value_description),
                 placeholder = stringResource(Res.string.dream_settings_currency_placeholder),
@@ -148,8 +175,8 @@ private fun DreamSettingsContent(
             Spacer(modifier = Modifier.height(24.dp))
             BettrDreamSettingsInputCard(
                 title = stringResource(Res.string.dream_settings_dream_date_title),
-                value = "",
-                onValueChange = {},
+                value = date,
+                onValueChange = onDateChanged,
                 description = stringResource(Res.string.dream_settings_dream_date_description),
                 placeholder = stringResource(Res.string.dream_settings_date_placeholder),
                 inputType = BettrInputType.Date
@@ -184,6 +211,10 @@ private fun EffectsHandler(
 private fun DreamSettingsContentPreview() {
     DreamSettingsContent(
         dreamLabel = "Comprar um imóvel",
+        value = "50000000",
+        date = "12/2030",
+        onValueChanged = {},
+        onDateChanged = {},
         onSaveClicked = {}
     )
 }
