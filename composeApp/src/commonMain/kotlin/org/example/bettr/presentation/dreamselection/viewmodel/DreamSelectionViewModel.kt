@@ -1,0 +1,124 @@
+package org.example.bettr.presentation.dreamselection.viewmodel
+
+import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import org.example.bettr.domain.model.DreamType
+import org.example.bettr.domain.model.DreamTypeModel
+import org.example.bettr.domain.usecase.GetDreamTypesUseCase
+import org.example.bettr.domain.usecase.SetSelectedDreamsUseCase
+import org.example.bettr.presentation.dreamselection.action.DreamSelectionAction
+import org.example.bettr.presentation.dreamselection.effect.DreamSelectionUiEffect
+import org.example.bettr.presentation.dreamselection.model.DreamSelectionUiModel
+import org.example.bettr.presentation.dreamselection.state.DreamSelectionUiState
+import org.example.bettr.presentation.dreamselection.view.getMockDreamItems
+
+internal class DreamSelectionViewModel(
+    private val getDreamTypesUseCase: GetDreamTypesUseCase,
+    private val setSelectedDreamsUseCase: SetSelectedDreamsUseCase
+) : ViewModel(), DreamSelectionAction {
+    private val _uiState = MutableStateFlow<DreamSelectionUiState>(DreamSelectionUiState.Loading)
+    val uiState = _uiState.asStateFlow()
+
+    private val _uiEffect = MutableSharedFlow<DreamSelectionUiEffect?>(0, 1)
+    val uiEffect = _uiEffect.asSharedFlow()
+
+    override fun sendAction(action: DreamSelectionAction.Action) {
+        when (action) {
+            is DreamSelectionAction.Action.OnInit -> onInit()
+            is DreamSelectionAction.Action.OnItemClicked -> handleItemClick(action.dreamType)
+            is DreamSelectionAction.Action.OnClickContinue -> handleClickContinue()
+        }
+    }
+
+    private fun onInit() {
+        // TODO: Replace with backend call when ready
+        val mockDreamItems = getMockDreamItems()
+        _uiState.value = DreamSelectionUiState.Resumed(
+            model = DreamSelectionUiModel(items = mockDreamItems)
+        )
+//        viewModelScope.launch {
+//            when (val result = getDreamTypesUseCase()) {
+//                is Result.Success -> {
+//                    val items = result.data.map { dreamType ->
+//                        DreamSelectionItemUiModel(
+//                            type = dreamType.type,
+//                            label = dreamType.label,
+//                            isSelected = false
+//                        )
+//                    }
+//                    _uiState.value = DreamSelectionUiState.Resumed(
+//                        model = DreamSelectionUiModel(items = items)
+//                    )
+//                }
+//                is Result.Error -> {
+//                    val errorMessage = when (result.error) {
+//                        NetworkError.NO_INTERNET -> "Sem conexão com a internet"
+//                        NetworkError.SERVER_ERROR -> "Erro no servidor"
+//                        NetworkError.SERIALIZATION -> "Erro ao processar dados"
+//                        NetworkError.REQUEST_TIMEOUT -> "Tempo de requisição esgotado"
+//                        NetworkError.UNAUTHORIZED -> "Não autorizado"
+//                        NetworkError.CONFLICT -> "Conflito na requisição"
+//                        NetworkError.TOO_MANY_REQUESTS -> "Muitas requisições"
+//                        NetworkError.PAYLOAD_TOO_LARGE -> "Dados muito grandes"
+//                        NetworkError.UNKNOWN -> "Erro desconhecido"
+//                    }
+//                    _uiState.value = DreamSelectionUiState.Error(message = errorMessage)
+//                }
+//            }
+//        }
+    }
+
+    private fun handleItemClick(dreamType: DreamType) {
+        val currentState = _uiState.value
+        if (currentState is DreamSelectionUiState.Resumed) {
+            val currentItems = currentState.model.items
+            val selectedCount = currentItems.count { it.isSelected }
+            val maxSelection = 3
+
+            val updatedItems = currentItems.map { item ->
+                if (item.type == dreamType) {
+                    val canToggle = item.isSelected || selectedCount < maxSelection
+                    if (canToggle) {
+                        item.copy(isSelected = !item.isSelected)
+                    } else {
+                        item
+                    }
+                } else {
+                    item
+                }
+            }
+
+            val newSelectedCount = updatedItems.count { it.isSelected }
+            val isLimitReached = newSelectedCount >= maxSelection
+
+            val finalItems = updatedItems.map { item ->
+                item.copy(visuallyDisabled = if (isLimitReached) true else item.isSelected)
+            }
+
+            _uiState.value = DreamSelectionUiState.Resumed(
+                model = DreamSelectionUiModel(items = finalItems)
+            )
+        }
+    }
+
+    private fun handleClickContinue() {
+        val currentState = _uiState.value
+        if (currentState is DreamSelectionUiState.Resumed) {
+            val selectedDreamsModels = currentState.model.items
+                .filter { it.isSelected }
+                .map { item ->
+                    DreamTypeModel(
+                        type = item.type,
+                        label = item.label
+                    )
+                }
+
+            setSelectedDreamsUseCase(selectedDreamsModels)
+
+            _uiEffect.tryEmit(DreamSelectionUiEffect.NavigateToNextScreen)
+        }
+    }
+}

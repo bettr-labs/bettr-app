@@ -4,7 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import org.example.bettr.presentation.bettypes.view.BetTypesScreen
+import org.example.bettr.presentation.dreamselection.view.DreamSelectionScreen
+import org.example.bettr.presentation.dreamsettings.view.DreamSettingsScreen
 import org.example.bettr.presentation.welcome.view.WelcomeScreen
 
 @Composable
@@ -26,10 +29,33 @@ fun BettrNavHost(
             BetTypesScreen(
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToNextScreen = {
-                    // TODO: Navigate to next screen when implemented
+                    navController.navigate(Route.DreamSelection)
+                }
+            )
+        }
+        composable<Route.DreamSelection> {
+            DreamSelectionScreen(
+                onNavigateToNextScreen = {
+                    navController.navigate(Route.DreamSettings(currentIndex = 0))
+                }
+            )
+        }
+        composable<Route.DreamSettings> { backStackEntry ->
+            val args = backStackEntry.toRoute<Route.DreamSettings>()
+            val currentIndex = args.currentIndex
+
+            DreamSettingsScreen(
+                currentIndex = currentIndex,
+                onNavigateToNextDream = {
+                    navController.navigate(
+                        Route.DreamSettings(currentIndex = currentIndex + 1)
+                    )
+                },
+                onNavigateToNextScreen = {
+                    // TODO: Navigate to the next screen after all dreams are configured
+                    navController.popBackStack(Route.Welcome, inclusive = false)
                 }
             )
         }
     }
 }
-

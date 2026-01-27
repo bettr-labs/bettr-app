@@ -2,16 +2,13 @@ package org.example.bettr.presentation.bettypes.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,6 +39,7 @@ import org.example.bettr.designsystem.components.BettrButtonSize
 import org.example.bettr.designsystem.components.BettrChecklistCard
 import org.example.bettr.designsystem.components.BettrHighlightBox
 import org.example.bettr.designsystem.components.BettrHighlightBoxColor
+import org.example.bettr.designsystem.components.BettrLoading
 import org.example.bettr.designsystem.components.BettrPagination
 import org.example.bettr.designsystem.theme.BettrGrayDark
 import org.example.bettr.designsystem.theme.BettrGrayDarker
@@ -60,8 +58,8 @@ import org.koin.compose.koinInject
 
 @Composable
 internal fun BetTypesScreen(
-    onNavigateBack: () -> Unit = {},
-    onNavigateToNextScreen: () -> Unit = {},
+    onNavigateBack: () -> Unit,
+    onNavigateToNextScreen: () -> Unit,
     viewModel: BetTypesViewModel = koinInject()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -73,14 +71,7 @@ internal fun BetTypesScreen(
     EffectsHandler(viewModel, onNavigateBack, onNavigateToNextScreen)
 
     when (val state = uiState) {
-        is BetTypesUiState.Loading -> {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
-        }
+        is BetTypesUiState.Loading -> BettrLoading()
         is BetTypesUiState.Resumed -> {
             BetTypesScreenContent(
                 betTypes = state.model.items,
@@ -105,6 +96,8 @@ private fun BetTypesScreenContent(
     onContinueClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
+    val hasSelectedBetTypes = betTypes.any { it.isSelected }
+
     Scaffold(
         modifier = Modifier.background(BettrNeutralBackground),
         topBar = {
@@ -125,6 +118,7 @@ private fun BetTypesScreenContent(
                 BettrButton(
                     text = stringResource(Res.string.continue_button),
                     size = BettrButtonSize.SmallText,
+                    enabled = hasSelectedBetTypes,
                     onClick = onContinueClick
                 )
                 Spacer(Modifier.height(12.dp))
