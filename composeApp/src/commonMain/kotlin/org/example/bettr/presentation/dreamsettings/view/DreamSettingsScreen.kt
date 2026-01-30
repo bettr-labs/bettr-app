@@ -1,10 +1,16 @@
 package org.example.bettr.presentation.dreamsettings.view
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -12,6 +18,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -39,7 +46,11 @@ import org.example.bettr.designsystem.components.BettrHighlightBox
 import org.example.bettr.designsystem.components.BettrInputType
 import org.example.bettr.designsystem.components.BettrLoading
 import org.example.bettr.designsystem.components.BettrPagination
+import org.example.bettr.designsystem.theme.BettrGrayDark
 import org.example.bettr.designsystem.theme.BettrGrayDarker
+import org.example.bettr.designsystem.theme.BettrGreen
+import org.example.bettr.designsystem.theme.BettrGreenDark
+import org.example.bettr.designsystem.theme.BettrGreenLighter
 import org.example.bettr.designsystem.theme.BettrTextStyles
 import org.example.bettr.presentation.dreamsettings.action.DreamSettingsAction
 import org.example.bettr.presentation.dreamsettings.effect.DreamSettingsUiEffect
@@ -163,6 +174,13 @@ private fun DreamSettingsContent(
                 color = BettrGrayDarker,
             )
             Spacer(modifier = Modifier.height(24.dp))
+            if (date.isNotEmpty() && value.isNotEmpty()) {
+                DaysRemainingCard(
+                    date = date,
+                    value = value
+                )
+            }
+            Spacer(modifier = Modifier.height(24.dp))
             BettrDreamSettingsInputCard(
                 title = stringResource(Res.string.dream_settings_dream_value_title),
                 value = value,
@@ -190,6 +208,57 @@ private fun DreamSettingsContent(
 }
 
 @Composable
+private fun DaysRemainingCard(
+    date: String,
+    value: String
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = BettrGreenLighter
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 4.dp
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            Text(
+                text = "Para alcançar sua meta até $date, você precisa economizar:",
+                style = BettrTextStyles.bodyLarge(),
+                color = BettrGrayDark
+            )
+            // TODO calcular dias restantes para cálculo do valor por dia e dias restantes
+            Row(
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = value,
+                    style = BettrTextStyles.titleSmall(),
+                    color = BettrGreenDark
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = "por dia",
+                    style = BettrTextStyles.bodyMedium(),
+                    color = BettrGrayDark
+                )
+            }
+            if (date.isNotEmpty()) {
+                Text(
+                    text = "Faltam $date dias para sua data alvo",
+                    style = BettrTextStyles.bodyMedium(),
+                    color = BettrGrayDark
+                )
+            }
+        }
+    }
+}
+
+@Composable
 private fun EffectsHandler(
     viewModel: DreamSettingsViewModel,
     onNavigateToNextDream: () -> Unit,
@@ -208,11 +277,24 @@ private fun EffectsHandler(
 
 @Preview
 @Composable
-private fun DreamSettingsContentPreview() {
+private fun DreamSettingsContentBeforeInputPreview() {
+    DreamSettingsContent(
+        dreamLabel = "Comprar um imóvel",
+        value = "",
+        date = "",
+        onValueChanged = {},
+        onDateChanged = {},
+        onSaveClicked = {}
+    )
+}
+
+@Preview
+@Composable
+private fun DreamSettingsContentAfterInputPreview() {
     DreamSettingsContent(
         dreamLabel = "Comprar um imóvel",
         value = "50000000",
-        date = "12/2030",
+        date = "120130",
         onValueChanged = {},
         onDateChanged = {},
         onSaveClicked = {}
