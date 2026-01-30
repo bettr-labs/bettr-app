@@ -18,7 +18,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -48,7 +47,6 @@ import org.example.bettr.designsystem.components.BettrLoading
 import org.example.bettr.designsystem.components.BettrPagination
 import org.example.bettr.designsystem.theme.BettrGrayDark
 import org.example.bettr.designsystem.theme.BettrGrayDarker
-import org.example.bettr.designsystem.theme.BettrGreen
 import org.example.bettr.designsystem.theme.BettrGreenDark
 import org.example.bettr.designsystem.theme.BettrGreenLighter
 import org.example.bettr.designsystem.theme.BettrTextStyles
