@@ -14,6 +14,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,18 +36,29 @@ import org.example.bettr.designsystem.theme.BettrGrayDark
 import org.example.bettr.designsystem.theme.BettrGrayDarker
 import org.example.bettr.designsystem.theme.BettrNeutralBackground
 import org.example.bettr.designsystem.theme.BettrTextStyles
+import org.example.bettr.presentation.openfinance.action.OpenFinanceAction
+import org.example.bettr.presentation.openfinance.effect.OpenFinanceUiEffect
+import org.example.bettr.presentation.openfinance.viewmodel.OpenFinanceViewModel
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.koinInject
 
 @Composable
 internal fun OpenFinanceScreen(
-    onNavigateToNextScreen: () -> Unit
+    onNavigateToNextScreen: () -> Unit,
+    viewModel: OpenFinanceViewModel = koinInject()
 ) {
-    OpenFinanceScreenContent()
+    EffectsHandler(viewModel, onNavigateToNextScreen)
+    OpenFinanceScreenContent(
+        onClickConnect = { viewModel.sendAction(OpenFinanceAction.Action.OnClickConnect) },
+        onClickSkip = { viewModel.sendAction(OpenFinanceAction.Action.OnClickSkip) }
+    )
 }
 
 @Composable
 private fun OpenFinanceScreenContent(
+    onClickConnect: () -> Unit,
+    onClickSkip: () -> Unit
 ) {
     Scaffold(
         modifier = Modifier.background(BettrNeutralBackground),
@@ -69,14 +81,14 @@ private fun OpenFinanceScreenContent(
                     text = "Conectar conta seguramente",
                     size = BettrButtonSize.SmallText,
                     enabled = true,
-                    onClick = { }
+                    onClick = onClickConnect
                 )
                 Spacer(Modifier.height(12.dp))
                 BettrButton(
                     text = "Vou anotar manualmente por enquanto",
                     color = BettrButtonColor.Neutral,
                     size = BettrButtonSize.SmallText,
-                    onClick = { }
+                    onClick = onClickSkip
                 )
             }
         }
@@ -169,10 +181,26 @@ private fun OpenFinanceCardsList(
     }
 }
 
+@Composable
+private fun EffectsHandler(
+    viewModel: OpenFinanceViewModel,
+    onNavigateToNextScreen: () -> Unit
+) {
+    LaunchedEffect(Unit) {
+        viewModel.uiEffect.collect { effect ->
+            when (effect) {
+                OpenFinanceUiEffect.NavigateToNextScreen -> onNavigateToNextScreen()
+            }
+        }
+    }
+}
+
 
 @Preview(showBackground = true, heightDp = 1250)
 @Composable
 private fun BetTypesScreenPreview() {
     OpenFinanceScreenContent(
+        onClickConnect = {},
+        onClickSkip = {}
     )
 }
