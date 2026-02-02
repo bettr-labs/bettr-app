@@ -28,13 +28,18 @@ import org.example.bettr.designsystem.theme.BettrGreenLight
 import org.example.bettr.designsystem.theme.BettrGreenLighter
 import org.example.bettr.designsystem.theme.BettrTextStyles
 import org.example.bettr.designsystem.theme.BettrTheme
+import org.example.bettr.designsystem.theme.BettrYellow
+import org.example.bettr.designsystem.theme.BettrYellowDark
+import org.example.bettr.designsystem.theme.BettrYellowLight
+import org.example.bettr.designsystem.theme.BettrYellowLighter
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 enum class BettrHighlightBoxColor {
     Green,
-    Blue
+    Blue,
+    Yellow
 }
 
 @Composable
@@ -56,6 +61,12 @@ fun BettrHighlightBox(
             BettrBlue,
             BettrBlue,
             BettrBlueDark
+        )
+        BettrHighlightBoxColor.Yellow -> listOf(
+            BettrYellowLighter,
+            BettrYellowLight,
+            BettrYellow,
+            BettrYellowDark
         )
     }
 

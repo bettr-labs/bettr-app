@@ -16,4 +16,10 @@ sealed interface Route {
     data class DreamSettings(
         val currentIndex: Int = 0
     ) : Route
+
+    @Serializable
+    data object OpenFinance : Route
+
+    @Serializable
+    data object Shield : Route
 }

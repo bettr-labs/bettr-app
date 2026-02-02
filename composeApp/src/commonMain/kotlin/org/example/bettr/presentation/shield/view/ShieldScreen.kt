@@ -1,4 +1,4 @@
-package org.example.bettr.presentation.openfinance.view
+package org.example.bettr.presentation.shield.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -8,9 +8,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,10 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import bettr.composeapp.generated.resources.Res
-import bettr.composeapp.generated.resources.lightning_icon
-import bettr.composeapp.generated.resources.lock_icon
-import bettr.composeapp.generated.resources.open_finance_img
-import bettr.composeapp.generated.resources.shield_icon
+import bettr.composeapp.generated.resources.shield_img
 import org.example.bettr.designsystem.components.BettrButton
 import org.example.bettr.designsystem.components.BettrButtonColor
 import org.example.bettr.designsystem.components.BettrButtonSize
@@ -39,15 +33,14 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-internal fun OpenFinanceScreen(
+fun ShieldScreen(
     onNavigateToNextScreen: () -> Unit
 ) {
-    OpenFinanceScreenContent()
+    ShieldScreenContent()
 }
 
 @Composable
-private fun OpenFinanceScreenContent(
-) {
+private fun ShieldScreenContent() {
     Scaffold(
         modifier = Modifier.background(BettrNeutralBackground),
         topBar = {
@@ -55,7 +48,7 @@ private fun OpenFinanceScreenContent(
                 modifier = Modifier.padding(horizontal = 24.dp)
                     .padding(top = 52.dp, bottom = 24.dp),
                 totalPages = 4,
-                currentPage = 4
+                currentPage = 2
             )
         },
         bottomBar = {
@@ -66,14 +59,14 @@ private fun OpenFinanceScreenContent(
                     .padding(all = 24.dp),
             ) {
                 BettrButton(
-                    text = "Conectar conta seguramente",
+                    text = "Ativar escudo protetor",
                     size = BettrButtonSize.SmallText,
                     enabled = true,
                     onClick = { }
                 )
                 Spacer(Modifier.height(12.dp))
                 BettrButton(
-                    text = "Vou anotar manualmente por enquanto",
+                    text = "Pular (não recomendado)",
                     color = BettrButtonColor.Neutral,
                     size = BettrButtonSize.SmallText,
                     onClick = { }
@@ -89,90 +82,57 @@ private fun OpenFinanceScreenContent(
         ) {
             Text(
                 modifier = Modifier.padding(top = 12.dp),
-                text = "Vamos automatizar sua jornada?",
+                text = "Vamos criar sua primeira barreira",
                 style = BettrTextStyles.headlineMedium(),
                 textAlign = TextAlign.Center,
                 color = BettrGrayDarker
             )
             Spacer(modifier = Modifier.height(12.dp))
             Text(
-                text = "Deixe a tecnologia trabalhar a seu favor",
+                text = "Para te ajudar nos momentos de impulso, precisamos da sua permissão para detectar e intervir quando você tentar acessar sites ou apps de apostas.",
                 style = BettrTextStyles.bodyLarger(),
                 textAlign = TextAlign.Center,
                 color = BettrGrayDark
             )
             Spacer(modifier = Modifier.height(24.dp))
             Image(
-                painter = painterResource(Res.drawable.open_finance_img),
-                contentDescription = null,
+                painter = painterResource(Res.drawable.shield_img),
+                contentDescription = null
             )
-            Spacer(modifier = Modifier.height(24.dp))
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color.White
-                ),
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = 4.dp
-                )
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Text(
-                        text = "Conectando sua conta bancária via Open Finance, nós identificamos automaticamente transferências para sites de apostas.",
-                        style = BettrTextStyles.bodyLarge(),
-                        color = BettrGrayDark
-                    )
-                    Text(
-                        text = "Isso te ajuda a ver o impacto real no seu sonho, sem você precisar anotar nada manualmente.",
-                        style = BettrTextStyles.bodyLarge(),
-                        color = BettrGrayDark
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.height(24.dp))
-            OpenFinanceCardsList()
+            ShieldCardsList()
             Spacer(modifier = Modifier.height(24.dp))
             BettrHighlightBox(
-                text = "\uD83D\uDD12 Seus dados são criptografados e usados APENAS para te ajudar a economizar. Nós nunca movimentamos seu dinheiro.",
-                color = BettrHighlightBoxColor.Blue
+                text = "Precisamos da sua permissão porque essa é a única forma de detectar quando você está abrindo um app ou site específico. Seus dados nunca saem do seu celular.",
+                color = BettrHighlightBoxColor.Yellow
             )
         }
     }
 }
 
 @Composable
-private fun OpenFinanceCardsList(
+private fun ShieldCardsList(
 
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         BettrStaticListCard(
-            title = "Automático e preciso",
-            description = "Rastreamento inteligente de transações",
-            icon = Res.drawable.lightning_icon
+            title = "Bloqueio de Sites",
+            description = "Detecta e bloqueia sites de apostas antes que você acesse",
         )
         BettrStaticListCard(
-            title = "100% seguro",
-            description = "Tecnologia aprovada pelo Banco Central",
-            icon = Res.drawable.shield_icon
+            title = "Bloqueio de Apps",
+            description = "Impede a abertura de aplicativos de apostas instalados",
         )
         BettrStaticListCard(
-            title = "Privacidade total",
-            description = "Apenas você vê suas informações",
-            icon = Res.drawable.lock_icon
+            title = "Intervenção Imediata",
+            description = "Mostra exercícios de respiração antes de permitir acesso",
         )
     }
 }
 
-
-@Preview(showBackground = true, heightDp = 1250)
+@Preview(heightDp = 1200)
 @Composable
-private fun BetTypesScreenPreview() {
-    OpenFinanceScreenContent(
-    )
+private fun ShieldScreenPreview() {
+    ShieldScreenContent()
 }

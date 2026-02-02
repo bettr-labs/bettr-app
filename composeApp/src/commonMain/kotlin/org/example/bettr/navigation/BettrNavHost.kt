@@ -8,6 +8,8 @@ import androidx.navigation.toRoute
 import org.example.bettr.presentation.bettypes.view.BetTypesScreen
 import org.example.bettr.presentation.dreamselection.view.DreamSelectionScreen
 import org.example.bettr.presentation.dreamsettings.view.DreamSettingsScreen
+import org.example.bettr.presentation.openfinance.view.OpenFinanceScreen
+import org.example.bettr.presentation.shield.view.ShieldScreen
 import org.example.bettr.presentation.welcome.view.WelcomeScreen
 
 @Composable
@@ -28,6 +30,13 @@ fun BettrNavHost(
         composable<Route.BetTypes> {
             BetTypesScreen(
                 onNavigateBack = { navController.popBackStack() },
+                onNavigateToNextScreen = {
+                    navController.navigate(Route.Shield)
+                }
+            )
+        }
+        composable<Route.Shield> {
+            ShieldScreen(
                 onNavigateToNextScreen = {
                     navController.navigate(Route.DreamSelection)
                 }
@@ -52,8 +61,14 @@ fun BettrNavHost(
                     )
                 },
                 onNavigateToNextScreen = {
-                    // TODO: Navigate to the next screen after all dreams are configured
-                    navController.popBackStack(Route.Welcome, inclusive = false)
+                    navController.navigate(Route.OpenFinance)
+                }
+            )
+        }
+        composable<Route.OpenFinance> {
+            OpenFinanceScreen(
+                onNavigateToNextScreen = {
+                    navController.navigate(Route.Welcome)
                 }
             )
         }
